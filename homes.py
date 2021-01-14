@@ -1,8 +1,9 @@
 from multiprocessing import Process
+from random import uniform
+from random import randint
 import os
 import time 
 import threading
-import math
 import sys
 import sysv_ipc
 
@@ -11,18 +12,31 @@ stopKey = 111
 mqHomeToHome = sysv_ipc.MessageQueue(key2, sysv_ipc.IPC_CREAT)
 mqStop = sysv_ipc.MessageQueue(stopKey, sysv_ipc.IPC_CREAT)
 
-key = 106 
-mqHomeToMarket = sysv_ipc.MessageQueue(key, sysv_ipc.IPC_CREAT)
+key1 = 106 
+mqHomeToMarket = sysv_ipc.MessageQueue(key1, sysv_ipc.IPC_CREAT)
 
-tabTest = [2, -110, 3, -156]
+tabTest = [(2, -110), (3, -156)]
 
-def Maison(ID):
-        typeShare = int(math.random()*3)+1
-        tauxConso = int(math.random()*5001) + 7000 # taux à l'année entre 7 000 et 12 000 kWh
-        initProduct = int(math.random()*5001) + 5000 #production par an entre 5 000 et 10 000 kWh
-        energie = (initProduct - tauxConso )/365.25
+maison["typeShare"] = randint(1,3)
+maison["tauxConso"] = randint(9000, 15000) # taux à l'année entre 7 000 et 12 000 kWh
+maison["initProduct"] = randint(7000, 10000) #production par an entre 5 000 et 10 000 kWh
+maison["energie"] = int((maison.get("initProduct") - maison.get("tauxConso"))/365.25)
 
-def maisonDsBesoin(mq, tab):
+##def print(self):
+ ##   print("La maison numéro " ,self.id," a une énergie de ",self.energie,"kWh, une production de ",self.initProduct," et un taux de conso de ",self.tauxConso,"")
+
+
+def creationVillage(n): 
+    tab = [] * n 
+    
+
+tabMaison = []
+creationVillage(tabMaison, 3)
+print(tabMaison)
+
+
+
+"""def maisonDsBesoin(mq, tab):
     i = 0
     while i < len(tab) :
         print("in home")
@@ -36,23 +50,18 @@ def maisonDsBesoin(mq, tab):
 
 def search(mq): #recherche de l'indice de la maison avec le moins d'énergie
     tabMaisonBesoin = []
-    tabMaisonBesoin.append(5)
     print(tabMaisonBesoin)
     for _ in range (0, 10):
         message,t = mq.receive()
-        message = int(message.decode())
+        message = tuple(message.decode())
         tabMaisonBesoin.append(message)
         print(tabMaisonBesoin)
-        time.sleep(0.1)
-
-   
+ 
 
 maisonDsBesoin(mqHomeToHome, tabTest)   
 search(mqHomeToHome)
 
-
-
-"""def besoin(m.energie): 
+def besoin(m.energie): 
     if m.typeShare == 1 : 
         while m.energie > 0:
             search(mqHomeToHome)
@@ -77,13 +86,13 @@ search(mqHomeToHome)
                  
 
 
-def search(mq): #recherche de l'indice de la maison avec le moins d'énergie
+"""def search(mq): #recherche de l'indice de la maison avec le moins d'énergie
     message,t = mq.receive  #Lecture d'un tableau de 2 valeurs par maison (ID, énergie)
     
     for i in len(mq):
         tabMaisonBesoin[i] = message[i].decode()
 
-    """mini = tabMaison[0]
+    mini = tabMaison[0]
     longueur=len(tabMaison)
     for i in range(longueur):
         if tabMaison[i] <= mini and tabMaison[i].energie < 0 : 
